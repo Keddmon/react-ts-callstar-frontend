@@ -1,4 +1,4 @@
-import 'Main.style.css';
+import './Main.style.css';
 
 const MainPresenter = ({
 
