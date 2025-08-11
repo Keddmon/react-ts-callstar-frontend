@@ -1,5 +1,6 @@
 import './Main.style.css';
-import { CidControlPanel, CidEventLog, CidStatusBar } from 'components';
+import { CidControlPanel, CidEventLog, CidStatusBar, CidPortPicker } from 'components';
+import { CidPortInfo } from 'types/global';
 
 type Props = {
     isElectron: boolean;
@@ -8,6 +9,9 @@ type Props = {
     baudRate: number;
     channel: string;
     events: { type: string; payload?: any; timestamp: number }[];
+
+    ports: CidPortInfo[];
+    loadingPorts: boolean;
 
     onSetPortPath: (v: string) => void;
     onSetBaudRate: (v: number) => void;
@@ -20,6 +24,8 @@ type Props = {
     onDial: (phone: string) => void;
     onForceEnd: () => void;
     onClearEvents: () => void;
+
+    onRefreshPorts: () => void;
 };
 
 const MainPresenter = ({
@@ -29,6 +35,8 @@ const MainPresenter = ({
     baudRate,
     channel,
     events,
+    ports,
+    loadingPorts,
     onSetPortPath,
     onSetBaudRate,
     onSetChannel,
@@ -39,9 +47,21 @@ const MainPresenter = ({
     onDial,
     onForceEnd,
     onClearEvents,
+    onRefreshPorts,
 }: Props) => {
+    const needPick = isElectron && !connected && !portPath;
+
+    /* ===== RENDER ===== */
     return (
         <div className="page">
+            <CidPortPicker
+                visible={needPick}
+                ports={ports}
+                loading={loadingPorts}
+                onRefresh={onRefreshPorts}
+                onSelect={(path) => onSetPortPath(path)}
+            />
+
             <header>
                 <h2>CallStar — CID 테스트 패널</h2>
             </header>

@@ -6,11 +6,26 @@ const MainContainer = () => {
     /* ===== HOOKS ===== */
     const {
         isElectron,
-        connected, portPath, setPortPath, baudRate, setBaudRate,
-        channel, setChannel,
-        events, setEvents,
+        connected,
+        portPath,
+        setPortPath,
+        baudRate,
+        setBaudRate,
 
-        open, close, status, deviceInfo, dial, forceEnd,
+        channel,
+        setChannel,
+        events,
+        setEvents,
+
+        ports,
+        loadingPorts,
+        listPorts,
+        open,
+        close,
+        status,
+        deviceInfo,
+        dial,
+        forceEnd,
     } = useCid();
 
     /* ===== RENDER ===== */
@@ -23,6 +38,9 @@ const MainContainer = () => {
             channel={channel}
             events={events}
 
+            ports={ports}
+            loadingPorts={loadingPorts}
+
             onSetPortPath={setPortPath}
             onSetBaudRate={setBaudRate}
             onSetChannel={setChannel}
@@ -34,6 +52,8 @@ const MainContainer = () => {
             onDial={dial}
             onForceEnd={forceEnd}
             onClearEvents={() => setEvents([])}
+
+            onRefreshPorts={listPorts}
         />
     );
 };

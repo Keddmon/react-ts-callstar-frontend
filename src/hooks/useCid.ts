@@ -1,23 +1,42 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { CidPortInfo } from '../types/global';
 
-type CidEvent = {
-    type: string;          // 예: 'incoming', 'device-info', 'off-hook', 'on-hook' 등
-    payload?: any;
-    timestamp: number;     // 프런트 추가 타임스탬프
-};
+type CidEvent = { type: string; payload?: any; timestamp: number };
 
 export function useCid() {
-    const isElectron = useMemo(() => typeof window !== 'undefined' && !!window.cid, []);
+    // const isElectron = useMemo(() => typeof window !== 'undefined' && !!window.cid, []);
+    const isElectron = typeof window !== 'undefined' && !!(window as any).cid;
     const [connected, setConnected] = useState(false);
     const [portPath, setPortPath] = useState<string>('');
     const [baudRate, setBaudRate] = useState<number>(19200);
     const [channel, setChannel] = useState<string>('1');
     const [events, setEvents] = useState<CidEvent[]>([]);
+    const [ports, setPorts] = useState<CidPortInfo[]>([]);
+    const [loadingPorts, setLoadingPorts] = useState(false);
     const unsubRef = useRef<(() => void) | null>(null);
 
     const pushEvent = useCallback((type: string, payload?: any) => {
         setEvents((prev) => [{ type, payload, timestamp: Date.now() }, ...prev].slice(0, 200));
     }, []);
+
+    const listPorts = useCallback(async () => {
+        if (!isElectron) return;
+        setLoadingPorts(true);
+        try {
+            const result = await window.cid!.listPorts();
+            if ((result as any)?.error) {
+                pushEvent('error', (result as any).error);
+                setPorts([]);
+            } else {
+                setPorts(result as CidPortInfo[]);
+            }
+        } catch (e: any) {
+            pushEvent('error', e?.message ?? String(e));
+            setPorts([]);
+        } finally {
+            setLoadingPorts(false);
+        }
+    }, [isElectron, pushEvent]);
 
     const open = useCallback(async () => {
         if (!isElectron) {
@@ -25,7 +44,7 @@ export function useCid() {
             return;
         }
         if (!portPath) {
-            pushEvent('error', '포트 경로를 입력하세요. (예: COM3, /dev/ttyUSB0)');
+            pushEvent('error', '포트를 먼저 선택하세요.');
             return;
         }
         try {
@@ -88,14 +107,18 @@ export function useCid() {
         }
     }, [isElectron, channel, pushEvent]);
 
-    // 이벤트 구독/해제
+    // 첫 마운트 시 포트 목록 로드
+    useEffect(() => {
+        if (isElectron) listPorts();
+    }, [isElectron, listPorts]);
+
+    // 이벤트 구독
     useEffect(() => {
         if (!isElectron) return;
-        if (unsubRef.current) unsubRef.current(); // 중복 구독 방지
+        if (unsubRef.current) unsubRef.current();
 
         const unsub = window.cid!.onEvent((evt) => {
-            // evt: main → preload → renderer로 온 장비 이벤트
-            pushEvent(evt?.type ?? 'event');
+            pushEvent(evt?.type ?? 'event', evt?.payload);
         });
         unsubRef.current = unsub;
 
@@ -111,8 +134,9 @@ export function useCid() {
         connected, portPath, setPortPath, baudRate, setBaudRate,
         channel, setChannel,
         events, setEvents,
+        ports, loadingPorts,
 
         // 명령
-        open, close, status, deviceInfo, dial, forceEnd,
+        listPorts, open, close, status, deviceInfo, dial, forceEnd,
     };
 }

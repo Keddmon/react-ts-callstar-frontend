@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
     interface Window {
@@ -9,7 +9,20 @@ declare global {
             dial: (phone: string, channel?: string) => Promise<boolean>;
             forceEnd: (channel?: string) => Promise<boolean>;
             deviceInfo: (channel?: string) => Promise<boolean>;
+            listPorts: () => Promise<CidPortInfo[] | { error: string }>;
             onEvent: (handler: (evt: any) => void) => () => void;
         };
     }
 }
+
+export type CidPortInfo = {
+    path: string;
+    manufacturer?: string;
+    serialNumber?: string;
+    pnpId?: string;
+    locationId?: string;
+    vendorId?: string;
+    productId?: string;
+    friendlyName?: string;
+    isLikelyCid: boolean;
+};
