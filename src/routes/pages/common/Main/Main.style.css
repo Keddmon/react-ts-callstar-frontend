@@ -1,0 +1,89 @@
+.page {
+    padding: 24px;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', Arial, sans-serif;
+}
+
+header {
+    margin-bottom: 16px;
+}
+
+.grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff;
+}
+
+.row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.row>label {
+    width: 100px;
+    color: #555;
+}
+
+button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    cursor: pointer;
+}
+
+button.primary {
+    background: #2563eb;
+    color: white;
+    border-color: #1d4ed8;
+}
+
+button.danger {
+    background: #ef4444;
+    color: white;
+    border-color: #dc2626;
+}
+
+input {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.log {
+    max-height: 320px;
+    overflow: auto;
+    background: #0b1020;
+    color: #d1d5db;
+    border-radius: 8px;
+    padding: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.log-item {
+    border-bottom: 1px dashed #334155;
+    padding: 8px 4px;
+}
+
+.log-meta {
+    color: #93c5fd;
+}
+
+.log-pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.muted {
+    color: #94a3b8;
+}
