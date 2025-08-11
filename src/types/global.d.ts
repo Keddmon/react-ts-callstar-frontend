@@ -1,4 +1,4 @@
-export { };
+export {};
 
 declare global {
     interface Window {
@@ -9,8 +9,8 @@ declare global {
             dial: (phone: string, channel?: string) => Promise<boolean>;
             forceEnd: (channel?: string) => Promise<boolean>;
             deviceInfo: (channel?: string) => Promise<boolean>;
-            listPorts: () => Promise<CidPortInfo[] | { error: string }>;
-            onEvent: (handler: (evt: any) => void) => () => void;
+            listPorts: () => Promise<Array<{ path: string; manufacturer?: string }>>;
+            onEvent: (handler: (evt: any) => void) => () => void; // unsubscribe
         };
     }
 }
