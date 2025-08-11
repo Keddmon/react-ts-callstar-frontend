@@ -39,10 +39,14 @@ const CidControlPanel = ({
                 <input
                     value={portInput}
                     onChange={(e) => setPortInput(e.target.value)}
-                    placeholder='예) COM5 / /dev/ttyUSB0'
+                    placeholder={'예) COM5'}
                     style={{ flex: 1 }}
                 />
                 <button onClick={() => setPortPath(portInput)}>적용</button>
+            </div>
+            <div className='row'>
+                <label>연결된 포트</label>
+                <span>{portPath}</span>
             </div>
 
             <div className='row'>
